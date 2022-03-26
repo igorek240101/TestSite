@@ -17,8 +17,8 @@ namespace TestSite.Infrastructure.Context
             {
                 eb.Property(c => c.Id);
                 eb.Property(c => c.Name);
-                eb.Property(c => c.BirthDate);
-                eb.Property(c => c.StartWorkDate);
+                eb.Property(c => c.BirthDate).HasColumnType("date");
+                eb.Property(c => c.StartWorkDate).HasColumnType("date");
                 eb.Property(c => c.Wage);
                 eb.Property(c => c.DepartamentId);
             });

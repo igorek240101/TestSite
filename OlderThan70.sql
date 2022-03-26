@@ -1,0 +1,8 @@
+USE [TestSite]
+GO
+
+DELETE FROM [dbo].[Worker]
+      WHERE DATEFROMPARTS(YEAR(GETDATE())-70, MONTH(GETDATE()), DAY(GETDATE())) > BirthDate
+GO
+
+
