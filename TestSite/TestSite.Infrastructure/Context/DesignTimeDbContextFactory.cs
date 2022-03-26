@@ -13,7 +13,7 @@ namespace TestSite.Infrastructure.Context
             var optionsBuilder = new DbContextOptionsBuilder<TestSiteContext>();
 
             string connectionString = args.Length == 0
-                ? "Data Source =.; Initial Catalog = FlsGmmb; Integrated Security = True"
+                ? "Data Source =.; Initial Catalog = TestSite; Integrated Security = True"
                 : args[0];
 
             optionsBuilder.UseSqlServer(connectionString, opts => opts.CommandTimeout((int)TimeSpan.FromMinutes(10).TotalSeconds));

@@ -6,7 +6,7 @@ namespace TestSite.Infrastructure.Context
 {
     public static class DbContextOptionsBuilderExtension
     {
-        public static IServiceCollection AddFlsGmmbContext(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddTestSiteContext(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<TestSiteContext>(options =>
             {

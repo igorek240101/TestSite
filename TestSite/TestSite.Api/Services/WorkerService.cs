@@ -48,7 +48,8 @@ namespace TestSite.Api.Services
             {
                 throw new ArgumentException("Все поля дожны быть заполнены");
             }
-            if (!await _departmentRepository.IsValidNameAsync(worker.Departament))
+            int departamentId = await _departmentRepository.IdByNameAsync(worker.Departament);
+            if (departamentId == -1)
             {
                 throw new ArgumentException("Некорректное наименование отдела");
             }
@@ -58,18 +59,44 @@ namespace TestSite.Api.Services
             }
             await _workerRepository.NewWorkerAsync(new Infrastructure.Entities.Worker()
             {
-
+                Name = worker.Name,
+                Wage = worker.Wage.Value,
+                BirthDate = worker.BirthDate.Value,
+                StartWorkDate = worker.StartWorkDate.Value,
+                DepartamentId = departamentId,
             });
         }
 
-        public Task UpdateWorkerAsync(int id, Worker worker)
+        public async Task UpdateWorkerAsync(Worker worker)
         {
-            throw new NotImplementedException();
+            if (worker.Id == null)
+            {
+                throw new ArgumentException("Пустое значение id");
+            }
+            Infrastructure.Entities.Worker oldWorker = await _workerRepository.GetWorkerAsync(worker.Id.Value);
+            if (oldWorker == null)
+            {
+                throw new ArgumentException("Пользователь с таким id не найден");
+            }
+            string name = worker.Name == null ? oldWorker.Name : worker.Name;
+            int wage = worker.Wage == null ? oldWorker.Wage : worker.Wage.Value;
+            DateTime birthDate = worker.BirthDate == null ? oldWorker.BirthDate : worker.BirthDate.Value;
+            DateTime startWorkDate = worker.StartWorkDate == null ? oldWorker.StartWorkDate : worker.StartWorkDate.Value;
+            int departamentId = worker.Departament == null ? oldWorker.DepartamentId : await _departmentRepository.IdByNameAsync(worker.Departament);
+            if (departamentId == -1)
+            {
+                throw new ArgumentException("Некорректное наименование отдела");
+            }
+            if (startWorkDate.AddYears(-START_WORKING_AGE) < birthDate)
+            {
+                throw new ArgumentException($"Нельзя начать работать раньше {START_WORKING_AGE} лет");
+            }
+            await _workerRepository.UpdateWorkerAsync(oldWorker.Id, name, wage, departamentId, birthDate, startWorkDate);
         }
 
-        public Task DeleteWorkerAsync(int id)
+        public async Task DeleteWorkerAsync(int id)
         {
-            throw new NotImplementedException();
+            await _workerRepository.DeleteWorkerAsync(id);
         }
     }
 }

@@ -13,6 +13,7 @@ namespace TestSite.Infrastructure.Context
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
+            /*
             modelBuilder.Entity<Departament>().HasData(
                     new Departament
                     {
@@ -68,6 +69,7 @@ namespace TestSite.Infrastructure.Context
                     DepartamentId = 3
                 }
                 );
+            */
         }
     }
 }

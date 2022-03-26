@@ -7,7 +7,7 @@ using TestSite.Infrastructure.Entities;
 using TestSite.Infrastructure.Interfaces;
 using System;
 
-namespace FlsGmmb.Infrastructure.Repositories
+namespace TestSite.Infrastructure.Repositories
 {
     public class WorkerRepository : IWorkerRepository
     {
@@ -39,13 +39,18 @@ namespace FlsGmmb.Infrastructure.Repositories
             return await _testSiteContext.Worker.Skip((pageNum - 1) * count).Take(count).ToArrayAsync();
         }
 
+        public async Task<Worker> GetWorkerAsync(int id)
+        {
+            return await _testSiteContext.Worker.FirstOrDefaultAsync(t => t.Id == id);
+        }
+
         public async Task NewWorkerAsync(Worker worker)
         {
             _testSiteContext.Worker.Add(worker);
             await _testSiteContext.SaveChangesAsync();
         }
 
-        public async Task UpdateWorkerAsync(int id, Worker worker)
+        public async Task UpdateWorkerAsync(int id, string name, int wage, int departamentId, DateTime birthDate, DateTime startWorkDate)
         {
             Worker oldWorker = await _testSiteContext.Worker.FirstOrDefaultAsync(t => t.Id == id);
             if (oldWorker == null)
@@ -54,11 +59,11 @@ namespace FlsGmmb.Infrastructure.Repositories
             }
             else
             {
-                oldWorker.Name = worker.Name;
-                oldWorker.Wage = worker.Wage;
-                oldWorker.DepartamentId = worker.DepartamentId;
-                oldWorker.BirthDate = worker.BirthDate;
-                oldWorker.StartWorkDate = worker.StartWorkDate;
+                oldWorker.Name = name;
+                oldWorker.Wage = wage;
+                oldWorker.DepartamentId = departamentId;
+                oldWorker.BirthDate = birthDate;
+                oldWorker.StartWorkDate = startWorkDate;
                 await _testSiteContext.SaveChangesAsync();
             }
         }

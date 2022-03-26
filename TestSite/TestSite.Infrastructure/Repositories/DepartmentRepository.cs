@@ -10,7 +10,7 @@ using TestSite.Infrastructure.Interfaces;
 
 namespace TestSite.Infrastructure.Repositories
 {
-    class DepartmentRepository : IDepartmentRepository
+    public class DepartmentRepository : IDepartmentRepository
     {
         private readonly TestSiteContext _testSiteContext;
 
@@ -37,9 +37,22 @@ namespace TestSite.Infrastructure.Repositories
             }
         }
 
-        public async Task<bool> IsValidNameAsync(string name)
+        public async Task<Departament[]> GetDepartmentsAsync()
         {
-            return await _testSiteContext.Departament.FirstOrDefaultAsync(t => t.Name == name) != null;
+            return await _testSiteContext.Departament.ToArrayAsync();
+        }
+
+        public async Task<int> IdByNameAsync(string name)
+        {
+            Departament departament = await _testSiteContext.Departament.FirstOrDefaultAsync(t => t.Name == name);
+            if (departament == null)
+            {
+                return -1;
+            }
+            else
+            {
+                return departament.Id;
+            }
         }
     }
 }
