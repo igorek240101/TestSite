@@ -20,14 +20,14 @@ namespace TestSite.Api.Services
             _departmentRepository = departmentRepository;
         }
 
-        public async Task<int> PagesCountAsync(int count)
+        public async Task<int> WorkersCountAsync(Filter filter)
         {
-            return await _workerRepository.PagesCountAsync(count);
+            return await _workerRepository.WorkersCountAsync(await ReFilter(filter));
         }
 
-        public async Task<Worker[]> GetWorkersAsync(int pageNum, int count)
+        public async Task<Worker[]> GetWorkersAsync(int pageNum, int count, Filter filter, IWorkerRepository.Sort sort)
         {
-            return (await _workerRepository.GetWorkersAsync(pageNum, count)).ToList().ConvertAll(t => new Worker() 
+            return (await _workerRepository.GetWorkersAsync(pageNum, count, await ReFilter(filter), sort)).ToList().ConvertAll(t => new Worker() 
             {
                 Id = t.Id,
                 Name = t.Name,
@@ -49,9 +49,10 @@ namespace TestSite.Api.Services
                 throw new ArgumentException("Все поля дожны быть заполнены");
             }
             int departamentId = await _departmentRepository.IdByNameAsync(worker.Departament);
-            if (departamentId == -1)
+            while (departamentId == -1)
             {
-                throw new ArgumentException("Некорректное наименование отдела");
+                await _departmentRepository.AddDepartment(worker.Departament);
+                departamentId = await _departmentRepository.IdByNameAsync(worker.Departament);
             }
             if (worker.StartWorkDate.Value.AddYears(-START_WORKING_AGE) < worker.BirthDate.Value)
             {
@@ -97,6 +98,33 @@ namespace TestSite.Api.Services
         public async Task DeleteWorkerAsync(int id)
         {
             await _workerRepository.DeleteWorkerAsync(id);
+        }
+
+        private async Task<IWorkerRepository.Filter> ReFilter(Filter filter)
+        {
+            int[] departmentId;
+            if (filter.Departament == null)
+            {
+                departmentId = null;
+            }
+            else
+            {
+                departmentId = new int[filter.Departament.Length];
+                for (int i = 0; i < departmentId.Length; i++)
+                {
+                    departmentId[i] = await _departmentRepository.IdByNameAsync(filter.Departament[i]);
+                }
+            }
+            return new IWorkerRepository.Filter()
+            {
+                MinWage = filter.MinWage,
+                MaxWage = filter.MaxWage,
+                MinBirth = filter.MinBirth,
+                MaxBirth = filter.MaxBirth,
+                MinStartWork = filter.MinStartWork,
+                MaxStartWork = filter.MaxStartWork,
+                Departament = departmentId
+            };
         }
     }
 }

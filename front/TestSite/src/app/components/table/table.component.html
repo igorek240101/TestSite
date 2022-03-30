@@ -1,0 +1,178 @@
+<div class="container-fluid">
+    <br/>
+    <br/>
+    <br/>
+
+    <div ngbDropdown class="d-inline-block">
+        <h6>Количество работников на странице</h6>
+        <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>{{PageSize}}</button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <button ngbDropdownItem (click)="PageSizeChange(5)">5</button>
+            <button ngbDropdownItem (click)="PageSizeChange(10)">10</button>
+            <button ngbDropdownItem (click)="PageSizeChange(25)">25</button>
+            <button ngbDropdownItem (click)="PageSizeChange(50)">50</button>
+            <button ngbDropdownItem (click)="PageSizeChange(100)">100</button>
+        </div>
+    </div>
+    <br/>
+    <br/>
+    <br/>
+
+    <section class="a">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="a2 col-sm-12 col-md-12 col-lg-12 col-xl-3 order-xl-last order-first">
+                    <div class="container">
+                        <div class="row">
+                            <div class="a2 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                <button class="btn btn-success" style="width: 100%;" (click)="NewWorker()">Создать</button>
+                            </div>
+                            <br/><br/>
+                            <div class="a2 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                <div class="btn-group btn-group-vertical" role="group" ngbRadioGroup name="radioBasic" [(ngModel)]="sort" style="width: 100%;">
+                                    <label ngbButtonLabel class="btn-primary">
+                                      <input ngbButton type="radio" class="btn-check" [value]="null" (change) = "SortChanged(null)"> Не сортировать
+                                    </label>
+                                    <label ngbButtonLabel class="btn-primary">
+                                      <input ngbButton type="radio" class="btn-check" [value]="true" (change) = "SortChanged(true)"> По возрастанию
+                                    </label>
+                                    <label ngbButtonLabel class="btn-primary">
+                                      <input ngbButton type="radio" class="btn-check" [value]="false" (change) = "SortChanged(false)"> По убыванию
+                                    </label>
+                                </div>
+                            </div> 
+                            <br/><br/><br/><br/><br/><br/>
+                            <div class="a2 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                <div class="btn-group btn-group" role="group" ngbRadioGroup name="radioBasic" [(ngModel)]="sortTarget" style="width: 100%;">
+                                    <div class="row">
+                                        <div class="a2 col-sm-2 col-md-2 col-lg-12 col-xl-12">
+                                            <label ngbButtonLabel class="btn-primary">
+                                                <input ngbButton type="radio" class="btn-check" [value]="0" (change) = "SortTargetChanged(0)"> ФИО
+                                            </label>
+                                        </div>
+                                        <div class="a2 col-sm-2 col-md-2 col-lg-12 col-xl-12">
+                                            <label ngbButtonLabel class="btn-primary">
+                                                <input ngbButton type="radio" class="btn-check" [value]="4" (change) = "SortTargetChanged(4)"> Отдел
+                                            </label>
+                                        </div>
+                                        <div class="a2 col-sm-2 col-md-2 col-lg-12 col-xl-12">
+                                            <label ngbButtonLabel class="btn-primary">
+                                                <input ngbButton type="radio" class="btn-check" [value]="1" (change) = "SortTargetChanged(1)"> Зарплата
+                                            </label>
+                                        </div>
+                                        <div class="a2 col-sm-3 col-md-3 col-lg-12 col-xl-12">
+                                            <label ngbButtonLabel class="btn-primary">
+                                                <input ngbButton type="radio" class="btn-check" [value]="2" (change) = "SortTargetChanged(2)"> Дата рождения
+                                            </label>
+                                        </div>
+                                        <div class="a2 col-sm-3 col-md-3 col-lg-12 col-xl-12">
+                                            <label ngbButtonLabel class="btn-primary">
+                                                <input ngbButton type="radio" class="btn-check" [value]="3" (change) = "SortTargetChanged(3)"> Дата начала карьеры
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/><br/><br/>
+                            <div class="a2 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                <form>
+                                    <div class="form-group">
+                                        <hr/>
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="a2 col-sm-2 col-md-2 col-lg-12 col-xl-12">Минимальная зарплата</div>
+                                                <div class="a2 col-sm-4 col-md-4 col-lg-12 col-xl-12">
+                                                    <input type="text" aria-label="Small" class="form-control" [(ngModel)] = "minWage" name="minWageInput">
+                                                </div>
+                                                <div class="a2 col-sm-2 col-md-2 col-lg-12 col-xl-12">Максимальная зарплата</div>
+                                                <div class="a2 col-sm-4 col-md-4 col-lg-12 col-xl-12">
+                                                    <input type="text" aria-label="Small" class="form-control" [(ngModel)] = "maxWage" name="maxWageInput">
+                                                </div>
+                                                <br/><br/><br/>
+                                                <div class="a2 col-sm-3 col-md-3 col-lg-12 col-xl-12">Дата рождения <br/>От: </div>
+                                                <div class="a2 col-sm-4 col-md-3 col-lg-10 col-xl-10">
+                                                    <ngbd-datepicker-popup [value]="minBirthModel" (onChanged) = "dateChanged($event, 0)"></ngbd-datepicker-popup>
+                                                </div>
+                                                <div class="a2 col-sm-1 col-md-1 col-lg-12 col-xl-12"><br/>До: </div>
+                                                <div class="a2 col-sm-4 col-md-3 col-lg-10 col-xl-10">
+                                                    <ngbd-datepicker-popup (onChanged) = "dateChanged($event, 1)"></ngbd-datepicker-popup>
+                                                </div>
+                                                <div class="a2 col-sm-3 col-md-3 col-lg-12 col-xl-12">Дата устройства на работу От: </div>
+                                                <div class="a2 col-sm-4 col-md-3 col-lg-10 col-xl-10">
+                                                    <ngbd-datepicker-popup (onChanged) = "dateChanged($event, 2)"></ngbd-datepicker-popup>
+                                                </div>
+                                                <div class="a2 col-sm-1 col-md-1 col-lg-12 col-xl-12"><br/>До: </div>
+                                                <div class="a2 col-sm-4 col-md-3 col-lg-10 col-xl-10">
+                                                    <ngbd-datepicker-popup (onChanged) = "dateChanged($event, 3)"></ngbd-datepicker-popup>
+                                                </div><br/><br/><br/>
+                                                <div class="a2 col-sm-3 col-md-3 col-lg-12 col-xl-12">
+                                                    <div ngbDropdown class="d-inline-block">
+                                                        <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Отдел</button>
+                                                        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                                                            <button ngbDropdownItem *ngFor="let dep of Departments" (click)="DepFilterAdd(dep)">{{dep}}</button>
+                                                        </div>
+                                                    </div>
+                                                </div><br/><br/><br/>
+                                                <div class="a2 col-sm-9 col-md-9 col-lg-12 col-xl-12">
+                                                    <div class="alert alert-warning">
+                                                        <ul>
+                                                            <div class="row">
+                                                                <li *ngFor="let dep of departs"><button class="btn btn-danger btn-sm" style="height: 90%;" (click)="DepFilterDel(dep)">X</button>       {{dep}}</li>
+                                                            </div>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="a2 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                                    <br/>
+                                                    <button type="button" class="btn btn-success" style="width: 100%; height: 100%;" (click)="ResetTable()">Применить фильтры</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                </div>
+                <div class="a1 col-sm-12 col-md-12 col-lg-12 col-xl-9 order-xl-first order-last">
+                    <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>ФИО</th>
+                            <th>Зарплата</th>
+                            <th>Дата Рождения</th>
+                            <th>Дата начала карьеры</th>
+                            <th>Отдел</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let worker of Workers">
+                            <th>{{worker.name}}</th>
+                            <th>{{worker.wage}}</th>
+                            <th>{{worker.birthDate}}</th>
+                            <th>{{worker.startWorkDate}}</th>
+                            <th>{{worker.departament}}</th>
+                            <th>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="a1 col-sm-12 col-md-12 col-lg-8 col-xl-7">
+                                            <button class="btn btn-warning" style="width: 100%;" (click)="UpdateWorker(worker)">Редактировать</button>
+                                        </div>
+                                        <div class="a1 col-sm-12 col-md-12 col-lg-4 col-xl-5">
+                                            <button class="btn btn-danger" style="width: 100%;" (click)="DelWorker(worker.id)">Удалить</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                    </tbody>
+                    </table>
+
+                    <ngb-pagination class="d-flex justify-content-center" [collectionSize] = WorkersCount [(page)] = Page [pageSize] = PageSize [maxSize]= "5" [rotate] = "true" [ellipses] = "false" [boundaryLinks] = "true" (pageChange) = "GetWorkers($event)"></ngb-pagination>
+                </div>
+            </div>
+        </div>
+    </section>
+  </div>

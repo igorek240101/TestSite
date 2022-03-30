@@ -23,20 +23,70 @@ namespace TestSite.Infrastructure.Repositories
             _testSiteContext.Dispose();
         }
 
-        public async Task<int> PagesCountAsync(int count)
+        public async Task<int> WorkersCountAsync(IWorkerRepository.Filter filter)
         {
-            int workersCount = await _testSiteContext.Worker.CountAsync();
-            int pagesCount = workersCount / count;
-            if (workersCount % count != 0)
-            {
-                pagesCount++;
-            }
-            return pagesCount;
+            IQueryable<Worker> queryable = _testSiteContext.Worker.Where(
+                t => (filter.MaxWage.HasValue ? filter.MaxWage.Value >= t.Wage : true) &&
+                (filter.MaxBirth.HasValue ? filter.MaxBirth.Value >= t.BirthDate : true) &&
+                (filter.MaxStartWork.HasValue ? filter.MaxStartWork.Value >= t.StartWorkDate : true) &&
+                (filter.MinStartWork.HasValue ? filter.MinStartWork.Value <= t.StartWorkDate : true) &&
+                (filter.MinBirth.HasValue ? filter.MinBirth.Value <= t.BirthDate : true) &&
+                (filter.MinWage.HasValue ? filter.MinWage.Value <= t.Wage : true) &&
+                (filter.Departament != null ? filter.Departament.Contains(t.DepartamentId) : true));
+
+            return await queryable.CountAsync();
         }
 
-        public async Task<Worker[]> GetWorkersAsync(int pageNum, int count)
+        public async Task<Worker[]> GetWorkersAsync(int pageNum, int count, IWorkerRepository.Filter filter, IWorkerRepository.Sort sort)
         {
-            return await _testSiteContext.Worker.Skip((pageNum - 1) * count).Take(count).ToArrayAsync();
+            IQueryable<Worker> queryable = _testSiteContext.Worker.Where(
+                t => (filter.MaxWage.HasValue ? filter.MaxWage.Value >= t.Wage : true) &&
+                (filter.MaxBirth.HasValue ? filter.MaxBirth.Value >= t.BirthDate : true) &&
+                (filter.MaxStartWork.HasValue ? filter.MaxStartWork.Value >= t.StartWorkDate : true) &&
+                (filter.MinStartWork.HasValue ? filter.MinStartWork.Value <= t.StartWorkDate : true) &&
+                (filter.MinBirth.HasValue ? filter.MinBirth.Value <= t.BirthDate : true) &&
+                (filter.MinWage.HasValue ? filter.MinWage.Value <= t.Wage : true) &&
+                (filter.Departament != null ? filter.Departament.Contains(t.DepartamentId) : true));
+
+            if(sort.isSort.HasValue)
+            {
+                if(sort.isSort.Value)
+                {
+                    switch(sort.sortKey)
+                    {
+                        case IWorkerRepository.Sort.Key.Name:
+                            queryable = queryable.OrderBy(t => t.Name); break;
+                        case IWorkerRepository.Sort.Key.Wage:
+                            queryable = queryable.OrderBy(t => t.Wage); break;
+                        case IWorkerRepository.Sort.Key.Birth:
+                            queryable = queryable.OrderBy(t => t.BirthDate); break;
+                        case IWorkerRepository.Sort.Key.StartWork:
+                            queryable = queryable.OrderBy(t => t.StartWorkDate); break;
+                        case IWorkerRepository.Sort.Key.Department:
+                            queryable = queryable.OrderBy(t => t.Departament); break;
+                    }
+                }
+                else
+                {
+                    switch (sort.sortKey)
+                    {
+                        case IWorkerRepository.Sort.Key.Name:
+                            queryable = queryable.OrderByDescending(t => t.Name); break;
+                        case IWorkerRepository.Sort.Key.Wage:
+                            queryable = queryable.OrderByDescending(t => t.Wage); break;
+                        case IWorkerRepository.Sort.Key.Birth:
+                            queryable = queryable.OrderByDescending(t => t.BirthDate); break;
+                        case IWorkerRepository.Sort.Key.StartWork:
+                            queryable = queryable.OrderByDescending(t => t.StartWorkDate); break;
+                        case IWorkerRepository.Sort.Key.Department:
+                            queryable = queryable.OrderByDescending(t => t.Departament); break;
+                    }
+                }
+            }
+
+            queryable = queryable.Skip((pageNum - 1) * count).Take(count);
+
+            return await queryable.ToArrayAsync();
         }
 
         public async Task<Worker> GetWorkerAsync(int id)

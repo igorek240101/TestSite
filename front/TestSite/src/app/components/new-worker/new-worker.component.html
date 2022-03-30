@@ -1,0 +1,58 @@
+<h3 align="center">Добавить сотрудника</h3>
+<hr/>
+<form>
+    <div class="container">
+      <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+          <div class="row">
+            <div class="col-12">
+              <input type="text" aria-label="Small" class="form-control" placeholder="ФИО" [(ngModel)] = "Name" name="name">
+            </div><br/><br/><br/>
+            <div class="a2 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+              Дата рождения            
+            </div>
+            <div class="a2 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+              <ngbd-datepicker-popup (onChanged) = "dateChanged($event, 0)"></ngbd-datepicker-popup>
+            </div><br/><br/><br/>
+            <div class="a2 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+              Дата устройства на работу          
+            </div>
+            <div class="a2 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+              <ngbd-datepicker-popup (onChanged) = "dateChanged($event, 1)"></ngbd-datepicker-popup>
+            </div><br/><br/><br/>
+            <div class="a2 col-sm-12 col-md-12 col-lg-6 col-xl-6">
+              <input
+                placeholder="Отдел:"
+                id="typeahead-focus"
+                type="text"
+                class="form-control"
+                [(ngModel)]="dep"
+                name="departament"
+                [ngbTypeahead]="search"
+                (focus)="focus$.next($any($event).target.value)"
+                (click)="click$.next($any($event).target.value)"
+                #instance="ngbTypeahead"
+              />
+            </div><br/><br/>
+            <div class="a2 col-sm-12 col-md-12 col-lg-6 col-xl-6">
+              <input type="text" aria-label="Small" class="form-control" placeholder="Заработная плата" [(ngModel)] = "wage" name="name">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</form>
+<br/>
+<label style="margin-left: 30%; color: red;">{{error}}</label>
+<br/>
+<hr/>
+<div class="row">
+  <div class="a2 col-sm-8 col-md-8 col-lg-8 col-xl-8"></div>
+  <div class="a2 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <button type="button" class="btn btn-success" style="height: 100%;" (click)="Save()">Добавить</button>
+  </div>
+</div>
+<br/>
+<br/>
+<br/>

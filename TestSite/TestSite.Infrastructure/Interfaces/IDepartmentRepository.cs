@@ -13,5 +13,7 @@ namespace TestSite.Infrastructure.Interfaces
         public Task<int> IdByNameAsync(string name);
 
         public Task<Departament[]> GetDepartmentsAsync();
+
+        public Task AddDepartment(string name);
     }
 }

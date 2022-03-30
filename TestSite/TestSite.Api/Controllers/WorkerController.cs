@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using TestSite.Api.Interfacies;
 using TestSite.Api.Entites;
+using System.Globalization;
+using System.IO;
 
 namespace TestSiteApi.Controllers
 {
@@ -20,13 +22,13 @@ namespace TestSiteApi.Controllers
             _workerService = workerService;
         }
 
-        [HttpGet]
-        [Route("PagesCount/{count}")]
-        public async Task<ActionResult<int>> PagesCountAsync(int count)
+        [HttpPut]
+        [Route("WorkersCount")]
+        public async Task<ActionResult<int>> WorkersCountAsync(Filter filter)
         {
             try
             {
-                return Ok(await _workerService.PagesCountAsync(count));
+                return Ok(await _workerService.WorkersCountAsync(filter));
             }
             catch (ArgumentException e)
             {
@@ -38,13 +40,19 @@ namespace TestSiteApi.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPut]
         [Route("GetWorkers/{pageNum}/{count}")]
-        public async Task<ActionResult<Worker[]>> GetWorkersAsync(int pageNum, int count)
+        public async Task<ActionResult<object>> GetWorkersAsync(int pageNum, int count, GetWorkerParams param)
         {
             try
             {
-                return Ok(await _workerService.GetWorkersAsync(pageNum, count));
+                return Ok(new { workers = (await _workerService.GetWorkersAsync(pageNum, count, param.Filter, param.Sort)).ToList().ConvertAll(
+                    t => new { id = t.Id,
+                               name = t.Name,
+                               wage = t.Wage,
+                               birthDate = t.BirthDate.Value.ToString("d", CultureInfo.GetCultureInfo("de-DE")),
+                               startWorkDate = t.StartWorkDate.Value.ToString("d", CultureInfo.GetCultureInfo("de-DE")),
+                               departament = t.Departament}) });
             }
             catch (ArgumentException e)
             {
@@ -57,8 +65,8 @@ namespace TestSiteApi.Controllers
         }
 
         [HttpDelete]
-        [Route("DeleteWorker")]
-        public async Task<ActionResult<Worker[]>> DeleteWorkerAsync(int id)
+        [Route("DeleteWorker/{id}")]
+        public async Task<ActionResult> DeleteWorkerAsync(int id)
         {
             try
             {
@@ -77,7 +85,7 @@ namespace TestSiteApi.Controllers
 
         [HttpPost]
         [Route("NewWorkerAsync")]
-        public async Task<ActionResult<Worker[]>> NewWorkerAsync(Worker worker)
+        public async Task<ActionResult> NewWorkerAsync(Worker worker)
         {
             try
             {
@@ -96,7 +104,7 @@ namespace TestSiteApi.Controllers
 
         [HttpPut]
         [Route("UpdateWorker")]
-        public async Task<ActionResult<Worker[]>> UpdateWorkerAsync(Worker worker)
+        public async Task<ActionResult> UpdateWorkerAsync(Worker worker)
         {
             try
             {

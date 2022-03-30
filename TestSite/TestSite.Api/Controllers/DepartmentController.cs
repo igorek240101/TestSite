@@ -21,11 +21,11 @@ namespace TestSite.Api.Controllers
 
         [HttpGet]
         [Route("GetDepartments")]
-        public async Task<ActionResult<string[]>> GetDepartmentsAsync()
+        public async Task<ActionResult<object>> GetDepartmentsAsync()
         {
             try
             {
-                return Ok(await _departmentService.GetDepartmentsAsync());
+                return Ok(new { Departments =  await _departmentService.GetDepartmentsAsync() });
             }
             catch (ArgumentException e)
             {

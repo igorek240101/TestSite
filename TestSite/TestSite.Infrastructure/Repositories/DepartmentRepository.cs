@@ -19,6 +19,12 @@ namespace TestSite.Infrastructure.Repositories
             _testSiteContext = testSiteContext;
         }
 
+        public async Task AddDepartment(string name)
+        {
+            _testSiteContext.Departament.Add(new Departament() { Name = name });
+            await _testSiteContext.SaveChangesAsync();
+        }
+
         public void Dispose()
         {
             _testSiteContext.Dispose();
